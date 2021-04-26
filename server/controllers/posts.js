@@ -1,4 +1,6 @@
 import { PostModel } from "../models/PostModel.js";
+
+
 export const getPosts = async (req, res) => {
   try {
     const posts = await PostModel.find();
@@ -29,6 +31,15 @@ export const updatePost = async (req, res) => {
       { new: true }
     );
 
+    res.status(200).json(post);
+  } catch (err) {
+    res.status(500).json({ error: err });
+  }
+};
+export const deletePost = async (req, res) => {
+  try {
+    const deletePost = req.body;
+    const post = await PostModel.deleteOne({ _id: deletePost._id });
     res.status(200).json(post);
   } catch (err) {
     res.status(500).json({ error: err });

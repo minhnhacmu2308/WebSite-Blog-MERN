@@ -5,13 +5,16 @@ import FavoriteIcon  from '@material-ui/icons/Favorite';
 import moment from 'moment';
 import useStyles from './style';
 import {useDispatch } from 'react-redux';
-import {updatePosts} from '../../../redux/actions'
+import {updatePosts,deletePosts} from '../../../redux/actions'
 export default function Post({post}){
     const classes = useStyles();
     const dispatch = useDispatch();
     const onLikeButtonClick = React.useCallback(() => {
         dispatch(updatePosts.updatePostRequest({...post, likeCount: post.likeCount+1}));
       },[post,dispatch]);
+    const onDeleteClick = React.useCallback(() => {
+        dispatch(deletePosts.deletePostsRequest({...post}));
+    },[post,dispatch])
     return(
        <Card>
            <CardHeader
@@ -19,7 +22,7 @@ export default function Post({post}){
            title ={post.author}
            subheader ={moment(post.updateAt).format('HH:MM MM DD,YYYY')}
            action={
-               <IconButton>
+               <IconButton onClick={onDeleteClick}>
                    <MoreVertIcon/>
                </IconButton>
            }

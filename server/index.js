@@ -1,7 +1,8 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import posts from './router/posts.js'
+import posts from './router/posts.js';
+import users from './router/users.js';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 dotenv.config()
@@ -14,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true , limit: "30mb" }));
 app.use(cors());
 
 app.use('/posts', posts);
-
+app.use('/users', users);
 mongoose
     .connect(URI, {useNewUrlParser:true , useUnifiedTopology: true})
     .then(() => {
