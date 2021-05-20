@@ -64,6 +64,7 @@ export default makeStyles((theme) => ({
         [theme.breakpoints.up('md')]: {
           display: 'flex',
         },
+        fontSize:10
       },
       sectionMobile: {
         display: 'flex',

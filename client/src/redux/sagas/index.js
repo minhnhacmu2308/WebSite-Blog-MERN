@@ -13,7 +13,6 @@ function* fetchPostSaga (action) {
     }
     
 }
-
 function* createPostRequest (action) {
     try{
         const posts = yield call(api.createPost,action.payload);
@@ -47,11 +46,34 @@ function* deletePostsRequest(action) {
     }
     
 }
+//users
+function* registerUsersRequest(action) {
+    try{
+        const registerUsers = yield call(api.registerUser,action.payload);
+        yield console.log('[registerUserss]-[user]',registerUsers.data)
+        yield put(actions.registerUsers.registerUsersSuccess(registerUsers.data));
+    }catch (errors){
+        yield put(actions.registerUsers.registerUsersError(errors));
+    }
+    
+}
+function* loginUsersRequest(action) {
+    try{
+        const loginUsers = yield call(api.loginUser,action.payload);
+        yield console.log('[login]-[user]',loginUsers.data)
+        yield put(actions.loginUsers.loginUsersSuccess(loginUsers.data));
+    }catch (errors){
+        yield put(actions.loginUsers.loginUsersError(errors));
+    }
+    
+}
 function* mySaga() {
     yield takeLatest(actions.getPosts.getPostRequest,fetchPostSaga)
     yield takeLatest(actions.createPosts.createPostRequest,createPostRequest)
     yield takeLatest(actions.updatePosts.updatePostRequest,updatePostRequest)
     yield takeLatest(actions.deletePosts.deletePostsRequest,deletePostsRequest)
+    yield takeLatest(actions.registerUsers.registerUsersRequest,registerUsersRequest)
+    yield takeLatest(actions.loginUsers.loginUsersRequest,loginUsersRequest)
 }
 
 export default mySaga;

@@ -7,5 +7,4 @@ router.get('/', getPosts);
 router.post('/', createPost);
 router.post('/update', updatePost);
 router.post('/delete', deletePost);
-router.post('/register', register);
 export default router;

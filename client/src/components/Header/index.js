@@ -1,30 +1,35 @@
-import React from 'react';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import InputBase from '@material-ui/core/InputBase';
-import Badge from '@material-ui/core/Badge';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
-import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import MailIcon from '@material-ui/icons/Mail';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import MoreIcon from '@material-ui/icons/MoreVert';
-import useStytes from './style';
-import RegisterModal from './Modal/RegisterModal.js'
+import React from "react";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import IconButton from "@material-ui/core/IconButton";
+import Typography from "@material-ui/core/Typography";
+import InputBase from "@material-ui/core/InputBase";
+import Badge from "@material-ui/core/Badge";
+import MenuItem from "@material-ui/core/MenuItem";
+import Menu from "@material-ui/core/Menu";
+import MenuIcon from "@material-ui/icons/Menu";
+import SearchIcon from "@material-ui/icons/Search";
+import AccountCircle from "@material-ui/icons/AccountCircle";
+import MailIcon from "@material-ui/icons/Mail";
+import NotificationsIcon from "@material-ui/icons/Notifications";
+import MoreIcon from "@material-ui/icons/MoreVert";
+import useStytes from "./style";
+import RegisterModal from "./Modal/RegisterModal.js";
+import LoginModal from "./Modal/LoginModal.js";
+import * as action from "../../redux/actions";
+import jwt_decode from "jwt-decode";
+import { useDispatch, useSelector } from "react-redux";
+import { userRegisterState$ } from "../../redux/selectors";
 
 export default function PrimarySearchAppBar() {
   const classes = useStytes();
+  const { token } = useSelector(userRegisterState$);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [user, setUser] = React.useState("");
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-  const [ischeck, setischeck] = React.useState(false);
-  const [ischeck1, setischeck1] = React.useState(false);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
+  const dispatch = useDispatch();
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -41,37 +46,63 @@ export default function PrimarySearchAppBar() {
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
-  const showmodal = () => {
-    setischeck(true)
-  }
-  const hidemodal = () => {
-    setischeck(false)
-  }
-  const menuId = 'primary-search-account-menu';
+  const showmodal = React.useCallback(() => {
+    dispatch(action.showModalRegister());
+  }, [dispatch]);
+  const showmodalLogin = React.useCallback(() => {
+    dispatch(action.showModalLogin());
+  }, [dispatch]);
+  const logout = React.useCallback(() => {
+    dispatch(action.logoutUsers.logoutUsersRequest());
+    window.location.reload(false);
+  },[dispatch,window])
+  React.useEffect(() => {
+    if (token !== null) {
+      var decoded = jwt_decode(token);
+      setUser(decoded.username);
+    }else{
+      setUser("");
+    }
+  });
+  const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
       id={menuId}
       keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      transformOrigin={{ vertical: "top", horizontal: "right" }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      <MenuItem onClick={showmodal}>Sign up</MenuItem>
+      <MenuItem onClick={showmodalLogin}>Login</MenuItem>
+    </Menu>
+  );
+  const renderMenuLogin = (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{ vertical: "top", horizontal: "right" }}
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-      <MenuItem onClick={showmodal}>Sign up</MenuItem>
+      <MenuItem onClick={logout}>Logout</MenuItem>
     </Menu>
   );
- 
-  const mobileMenuId = 'primary-search-account-menu-mobile';
+
+  const mobileMenuId = "primary-search-account-menu-mobile";
   const renderMobileMenu = (
     <Menu
       anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
       id={mobileMenuId}
       keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      transformOrigin={{ vertical: "top", horizontal: "right" }}
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
@@ -100,7 +131,7 @@ export default function PrimarySearchAppBar() {
         >
           <AccountCircle />
         </IconButton>
-        <p>Profile</p>
+        <p>{token == null ? "Profile" : user}</p>
       </MenuItem>
     </Menu>
   );
@@ -130,7 +161,7 @@ export default function PrimarySearchAppBar() {
                 root: classes.inputRoot,
                 input: classes.inputInput,
               }}
-              inputProps={{ 'aria-label': 'search' }}
+              inputProps={{ "aria-label": "search" }}
             />
           </div>
           <div className={classes.grow} />
@@ -154,6 +185,9 @@ export default function PrimarySearchAppBar() {
               color="inherit"
             >
               <AccountCircle />
+              <Typography className={classes.title} variant="h6" noWrap>
+                {token == null ? null : user}
+              </Typography>
             </IconButton>
           </div>
           <div className={classes.sectionMobile}>
@@ -169,10 +203,10 @@ export default function PrimarySearchAppBar() {
           </div>
         </Toolbar>
       </AppBar>
-      <RegisterModal isCheck={ischeck} hideModal={hidemodal}/>
+      <RegisterModal />
+      <LoginModal />
       {renderMobileMenu}
-      {renderMenu}
-
+      {token == null ? renderMenu : renderMenuLogin}
     </div>
   );
 }

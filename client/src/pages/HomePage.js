@@ -7,6 +7,7 @@ import useStytes from './style';
 import {useDispatch} from 'react-redux';
 import * as action from '../redux/actions';
 import CreatePostModal from '../components/CreatPostModel/index'
+import Notice from '../components/Notice/Notice.js'
 export default function HomePage(){
     const classes = useStytes();
     const dispatch = useDispatch();
@@ -18,6 +19,7 @@ export default function HomePage(){
             <Header/>
             <PostList/>
             <CreatePostModal/>
+            <Notice/>
             <Fab color='primary' className={classes.fab} onClick={openCreatePostModal}>
                 <AddIcon/>
             </Fab>

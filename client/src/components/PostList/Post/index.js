@@ -2,6 +2,7 @@ import React from 'react';
 import {Avatar, Card , CardActions, CardContent, CardHeader, CardMedia , IconButton,Typography} from '@material-ui/core';
 import MoreVertIcon  from '@material-ui/icons/MoreVert';
 import FavoriteIcon  from '@material-ui/icons/Favorite';
+import Skeleton from '@material-ui/lab/Skeleton';
 import moment from 'moment';
 import useStyles from './style';
 import {useDispatch } from 'react-redux';
@@ -18,9 +19,9 @@ export default function Post({post}){
     return(
        <Card>
            <CardHeader
-           avatar={<Avatar>A</Avatar>}
+           avatar={<Avatar src = {post.avatar_owner?post.avatar_owner:"s"}/>}
            title ={post.author}
-           subheader ={moment(post.updateAt).format('HH:MM MM DD,YYYY')}
+           subheader ={moment(post.updateAt).format('HH:MM:SS MM DD,YYYY')}
            action={
                <IconButton onClick={onDeleteClick}>
                    <MoreVertIcon/>

@@ -9,6 +9,10 @@ const schema = new mongoose.Schema({
         type: String, 
         required: true, 
     },
+    post_owner_id:{
+        type: String,
+        index : true
+    },
     author: {
         type: String, 
         required: true, 
@@ -18,7 +22,8 @@ const schema = new mongoose.Schema({
     likeCount: {
         type: Number, 
         default: 0, 
-    }
+    },
+    avatar_owner: String
 
 },{timestamps:true});
 export const PostModel = mongoose.model("Post", schema)
